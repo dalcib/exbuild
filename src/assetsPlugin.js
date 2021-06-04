@@ -2,10 +2,8 @@ const fs = require('fs')
 const path = require('path')
 const crypto = require('crypto')
 const sizeOf = require('image-size')
-const { builtinModules } = require('module')
 
-//XXXXXXXXXXXX
-const imageExtensions = ['.png', '.jpg', '.jpeg', '.bmp', '.gif', '.webp']
+const imageExts = ['bmp', 'gif', 'jpg', 'jpeg', 'png', 'psd', 'svg', 'webp']
 
 const assetsPlugin = {
   name: 'assets',
@@ -31,7 +29,7 @@ const assetsPlugin = {
       hasher.update(fs.readFileSync(assetPath))
       const hash = hasher.digest('hex')
 
-      const isImage = imageExtensions.includes(ext)
+      const isImage = imageExts.includes(ext)
       let dimensions = {}
       //@ts-ignore
       if (isImage) dimensions = sizeOf(assetPath)

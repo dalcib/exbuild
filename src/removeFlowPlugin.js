@@ -4,7 +4,7 @@ const flowRemoveTypes = require('flow-remove-types')
 
 let cache = new Map()
 let updateCache = false
-const cacheFile = './.cache-removed-flow.json'
+const cacheFile = './.expo/esbuild/cache/removed-flow.json'
 if (fs.existsSync(cacheFile)) cache = new Map(JSON.parse(fs.readFileSync(cacheFile).toString()))
 const packagesRemoveFlow = ((modules) =>
   new RegExp(modules.map((module) => `node_modules[/|\\\\]${module}.*\\.jsx?$`).join('|'), 'g'))([

@@ -1,5 +1,4 @@
 const { networkInterfaces } = require('os')
-const { getConfig } = require('@expo/config')
 
 /** @return {string} ip */
 function getIp() {
@@ -24,17 +23,20 @@ function getExtensions(platform) {
     '.ts',
     '.jsx',
     '.js',
+    '.json',
   ]
 }
 
-/** @param {string[]} assetExtensions */
-function getAssetLoaders(assetExtensions) {
-  return assetExtensions.reduce((loaders, ext) => {
-    loaders[ext] = 'file'
+/** @param {string[]} assetExts */
+function getAssetLoaders(assetExts) {
+  return assetExts.reduce((loaders, ext) => {
+    loaders['.' + ext] = 'file'
     return loaders
   }, {})
 }
 
-const config = getConfig(process.cwd())
+function getPolyfills(polyfills) {
+  return polyfills.map((polyfill) => 'require("' + polyfill + '");').join('\n')
+}
 
-module.exports = { config, getIp, getExtensions, getAssetLoaders }
+module.exports = { getIp, getExtensions, getAssetLoaders, getPolyfills }
