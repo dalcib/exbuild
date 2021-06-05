@@ -1,4 +1,5 @@
 const { networkInterfaces } = require('os')
+const fs = require('fs')
 
 /** @return {string} ip */
 function getIp() {
@@ -10,6 +11,19 @@ function getIp() {
 }
 
 function getExtensions(platform) {
+  if (platform === 'web') {
+    return [
+      `.${platform}.tsx`,
+      `.${platform}.ts`,
+      `.${platform}.jsx`,
+      `.${platform}.js`,
+      '.tsx',
+      '.ts',
+      '.jsx',
+      '.js',
+      '.json',
+    ]
+  }
   return [
     `.${platform}.tsx`,
     `.${platform}.ts`,
@@ -35,8 +49,19 @@ function getAssetLoaders(assetExts) {
   }, {})
 }
 
-function getPolyfills(polyfills) {
+function getPolyfills(polyfills, platform) {
+  if (platform === 'web') return ''
   return polyfills.map((polyfill) => 'require("' + polyfill + '");').join('\n')
 }
 
-module.exports = { getIp, getExtensions, getAssetLoaders, getPolyfills }
+function mkdir(dir) {
+  try {
+    fs.mkdirSync(dir, '0755')
+  } catch (e) {
+    if (e.code !== 'EEXIST') {
+      throw e
+    }
+  }
+}
+
+module.exports = { getIp, getExtensions, getAssetLoaders, getPolyfills, mkdir }

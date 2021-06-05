@@ -4,6 +4,12 @@ const { writeFileSync, readFileSync } = require('fs')
 const { resolve, dirname } = require('path')
 const { Command } = require('commander')
 const config = require('./config')
+const runServer = require('./server')
+
+const platform = process.argv[2]
+if (!['android', 'ios', 'web'].includes(platform)) {
+  throw Error('platform must be android, ios or web')
+}
 
 const program = new Command()
 
@@ -16,7 +22,7 @@ program
   .option('-w, --web', 'Replaces Native-stack for Stack and disable react-screens')
   .option('-s, --save-file <File>', 'Save to the specified file')
   .action((options) => {
-    require('./server')
+    runServer(platform)
     /* const code = generateNavigator(options.pagesDir, options.destDir, options.web)
 
     if (options.saveFile) {
