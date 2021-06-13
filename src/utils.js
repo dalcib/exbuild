@@ -10,35 +10,23 @@ function getIp() {
     .map((intf) => intf.address)[0]
 }
 
+/** @param {'android'|'ios'|'web'} platform */
 function getExtensions(platform) {
+  const platfExts = [`.${platform}.tsx`, `.${platform}.ts`, `.${platform}.jsx`, `.${platform}.js`]
+  const baseExts = ['.tsx', '.ts', '.jsx', '.js', '.json', '.wasm']
   if (platform === 'web') {
-    return [
-      `.${platform}.tsx`,
-      `.${platform}.ts`,
-      `.${platform}.jsx`,
-      `.${platform}.js`,
-      '.tsx',
-      '.ts',
-      '.jsx',
-      '.js',
-      '.json',
-    ]
+    return [...platfExts, ...baseExts]
+  } else {
+    return [...platfExts, '.native.tsx', '.native.ts', '.native.jsx', '.native.js', ...baseExts]
   }
-  return [
-    `.${platform}.tsx`,
-    `.${platform}.ts`,
-    `.${platform}.jsx`,
-    `.${platform}.js`,
-    '.native.tsx',
-    '.native.ts',
-    '.native.jsx',
-    '.native.js',
-    '.tsx',
-    '.ts',
-    '.jsx',
-    '.js',
-    '.json',
-  ]
+}
+
+function getPlugins(config) {
+  return config.plugins.map((plugin) => {
+    if (plugin.name === 'removeFlowPlugin') return plugin(config.removeFlowOptions)
+    if (plugin.name === 'aliasPlugin') return plugin(config.aliasOptions)
+    return plugin
+  })
 }
 
 /** @param {string[]} assetExts */
@@ -49,11 +37,12 @@ function getAssetLoaders(assetExts) {
   }, {})
 }
 
-function getPolyfills(polyfills, platform) {
-  if (platform === 'web') return ''
+/** @param {string[]} polyfills */
+function getPolyfills(polyfills) {
   return polyfills.map((polyfill) => 'require("' + polyfill + '");').join('\n')
 }
 
+/** @param {string} dir */
 function mkdir(dir) {
   try {
     fs.mkdirSync(dir, '0755')
@@ -64,4 +53,4 @@ function mkdir(dir) {
   }
 }
 
-module.exports = { getIp, getExtensions, getAssetLoaders, getPolyfills, mkdir }
+module.exports = { getIp, getExtensions, getAssetLoaders, getPolyfills, getPlugins, mkdir }
