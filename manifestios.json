@@ -1,0 +1,264 @@
+[
+  {
+    "rootTag": 11,
+    "initialProps": {
+      "exp": {
+        "appOwnership": "expo",
+        "initialUri": "exp://3n-4qg.dalci.expo-esbuild-basic.exp.direct",
+        "shell": false,
+        "manifestString": {
+          "slug": "expo-esbuild-basic",
+          "packagerOpts": {
+            "scheme": null,
+            "lanType": "ip",
+            "minify": false,
+            "urlRandomness": "3n-4qg",
+            "https": false,
+            "hostType": "tunnel",
+            "devClient": false,
+            "dev": true
+          },
+          "bundleUrl": "http://packager.3n-4qg.dalci.expo-esbuild-basic.exp.direct:80/index.bundle?platform=ios&dev=true&hot=false&minify=false",
+          "debuggerHost": "packager.3n-4qg.dalci.expo-esbuild-basic.exp.direct:80",
+          "android": {
+            "adaptiveIcon": {
+              "foregroundImageUrl": "http://packager.3n-4qg.dalci.expo-esbuild-basic.exp.direct:80/assets/./assets/adaptive-icon.png",
+              "foregroundImage": "./assets/adaptive-icon.png",
+              "backgroundColor": "#FFFFFF"
+            }
+          },
+          "icon": "./assets/icon.png",
+          "_internal": {
+            "packageJsonPath": "C:UsersDalciPlaygroundexpo-esbuild-basicpackage.json",
+            "projectRoot": "C:UsersDalciPlaygroundexpo-esbuild-basic",
+            "staticConfigPath": "C:UsersDalciPlaygroundexpo-esbuild-basicapp.json",
+            "isDebug": false,
+            "dynamicConfigPath": null
+          },
+          "isVerified": true,
+          "name": "expo-esbuild-basic",
+          "version": "1.0.0",
+          "iconUrl": "http://packager.3n-4qg.dalci.expo-esbuild-basic.exp.direct:80/assets/./assets/icon.png",
+          "hostUri": "3n-4qg.dalci.expo-esbuild-basic.exp.direct:80",
+          "id": "@dalci/expo-esbuild-basic",
+          "updates": { "fallbackToCacheTimeout": 0 },
+          "orientation": "portrait",
+          "web": { "favicon": "./assets/favicon.png" },
+          "ios": { "supportsTablet": true },
+          "sdkVersion": "41.0.0",
+          "logUrl": "http://3n-4qg.dalci.expo-esbuild-basic.exp.direct:80/logs",
+          "platforms": ["ios", "android", "web"],
+          "assetBundlePatterns": ["**/*"],
+          "mainModuleName": "index",
+          "developer": {
+            "projectRoot": "C:UsersDalciPlaygroundexpo-esbuild-basic",
+            "tool": "expo-cli"
+          },
+          "splash": {
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff",
+            "image": "./assets/splash.png",
+            "imageUrl": "http://packager.3n-4qg.dalci.expo-esbuild-basic.exp.direct:80/assets/./assets/splash.png"
+          }
+        }
+      }
+    }
+  },
+
+  {
+    "rootTag": 1,
+    "initialProps": {
+      "exp": {
+        "appOwnership": "expo",
+        "initialUri": "exp://3n-4qg.dalci.expo-esbuild-basic.exp.direct",
+        "shell": false,
+        "manifestString": {
+          "slug": "expo-esbuild-basic",
+          "packagerOpts": {
+            "scheme": null,
+            "lanType": "ip",
+            "minify": false,
+            "urlRandomness": "3n-4qg",
+            "https": false,
+            "hostType": "tunnel",
+            "devClient": false,
+            "dev": true
+          },
+          "bundleUrl": "http://packager.3n-4qg.dalci.expo-esbuild-basic.exp.direct:80/index.bundle?platform=ios&dev=true&hot=false&minify=false",
+          "debuggerHost": "packager.3n-4qg.dalci.expo-esbuild-basic.exp.direct:80",
+          "android": {
+            "adaptiveIcon": {
+              "foregroundImageUrl": "http://packager.3n-4qg.dalci.expo-esbuild-basic.exp.direct:80/assets/./assets/adaptive-icon.png",
+              "foregroundImage": "./assets/adaptive-icon.png",
+              "backgroundColor": "#FFFFFF"
+            }
+          },
+          "icon": "./assets/icon.png",
+          "_internal": {
+            "packageJsonPath": "C:UsersDalciPlaygroundexpo-esbuild-basicpackage.json",
+            "projectRoot": "C:UsersDalciPlaygroundexpo-esbuild-basic",
+            "staticConfigPath": "C:UsersDalciPlaygroundexpo-esbuild-basicapp.json",
+            "isDebug": false,
+            "dynamicConfigPath": null
+          },
+          "isVerified": true,
+          "name": "expo-esbuild-basic",
+          "version": "1.0.0",
+          "iconUrl": "http://packager.3n-4qg.dalci.expo-esbuild-basic.exp.direct:80/assets/./assets/icon.png",
+          "hostUri": "3n-4qg.dalci.expo-esbuild-basic.exp.direct:80",
+          "id": "@dalci/expo-esbuild-basic",
+          "updates": { "fallbackToCacheTimeout": 0 },
+          "orientation": "portrait",
+          "web": { "favicon": "./assets/favicon.png" },
+          "ios": { "supportsTablet": true },
+          "sdkVersion": "41.0.0",
+          "logUrl": "http://3n-4qg.dalci.expo-esbuild-basic.exp.direct:80/logs",
+          "platforms": ["ios", "android", "web"],
+          "assetBundlePatterns": ["**/*"],
+          "mainModuleName": "index",
+          "developer": {
+            "projectRoot": "C:UsersDalciPlaygroundexpo-esbuild-basic",
+            "tool": "expo-cli"
+          },
+          "splash": {
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff",
+            "image": "./assets/splash.png",
+            "imageUrl": "http://packager.3n-4qg.dalci.expo-esbuild-basic.exp.direct:80/assets/./assets/splash.png"
+          }
+        }
+      }
+    }
+  },
+  {
+    "rootTag": 1,
+    "initialProps": {
+      "exp": {
+        "appOwnership": "expo",
+        "initialUri": "exp://192.168.29.72:19000",
+        "shell": false,
+        "manifestString": {
+          "name": "expo-esbuild-basic",
+          "slug": "expo-esbuild-basic",
+          "version": "1.0.0",
+          "orientation": "portrait",
+          "icon": "./assets/icon.png",
+          "splash": {
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff",
+            "image": "./assets/splash.png",
+            "imageUrl": "http://192.168.29.72:19000/assets/./assets/splash.png"
+          },
+          "updates": { "fallbackToCacheTimeout": 0 },
+          "assetBundlePatterns": ["**/*"],
+          "ios": { "supportsTablet": true },
+          "android": {
+            "adaptiveIcon": {
+              "foregroundImageUrl": "http://192.168.29.72:19000/assets/./assets/adaptive-icon.png",
+              "foregroundImage": "./assets/adaptive-icon.png",
+              "backgroundColor": "#FFFFFF"
+            }
+          },
+          "web": { "favicon": "./assets/favicon.png" },
+          "_internal": {
+            "isDebug": false,
+            "projectRoot": "C:UsersDalciPlaygroundexpo-esbuild-basic",
+            "dynamicConfigPath": null,
+            "staticConfigPath": "C:UsersDalciPlaygroundexpo-esbuild-basicapp.json",
+            "packageJsonPath": "C:UsersDalciPlaygroundexpo-esbuild-basicpackage.json"
+          },
+          "sdkVersion": "41.0.0",
+          "platforms": ["ios", "android", "web"],
+          "developer": {
+            "projectRoot": "C:UsersDalciPlaygroundexpo-esbuild-basic",
+            "tool": "expo-cli"
+          },
+          "packagerOpts": {
+            "scheme": null,
+            "hostType": "lan",
+            "lanType": "ip",
+            "devClient": false,
+            "dev": true,
+            "minify": false,
+            "urlRandomness": "3n-4qg",
+            "https": false
+          },
+          "mainModuleName": "index",
+          "bundleUrl": "http://192.168.29.72:19000/index.bundle?platform=ios&dev=true&hot=false&minify=false",
+          "debuggerHost": "192.168.29.72:19000",
+          "logUrl": "http://192.168.29.72:19000/logs",
+          "hostUri": "192.168.29.72:19000",
+          "iconUrl": "http://192.168.29.72:19000/assets/./assets/icon.png",
+          "id": "@dalci/expo-esbuild-basic",
+          "isVerified": true
+        }
+      }
+    }
+  },
+
+  {
+    "rootTag": 21,
+    "initialProps": {
+      "exp": {
+        "initialUri": "exp://192.168.29.72:19000",
+        "shell": false,
+        "manifestString": {
+          "name": "expo-esbuild-basic",
+          "slug": "expo-esbuild-basic",
+          "version": "1.0.0",
+          "orientation": "portrait",
+          "icon": "./assets/icon.png",
+          "splash": {
+            "image": "./assets/splash.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff",
+            "imageUrl": "http://192.168.29.72:19000/assets/./assets/splash.png"
+          },
+          "updates": { "fallbackToCacheTimeout": 0 },
+          "assetBundlePatterns": ["**/*"],
+          "ios": { "supportsTablet": true },
+          "android": {
+            "adaptiveIcon": {
+              "foregroundImage": "./assets/adaptive-icon.png",
+              "backgroundColor": "#FFFFFF",
+              "foregroundImageUrl": "http://192.168.29.72:19000/assets/./assets/adaptive-icon.png"
+            }
+          },
+          "web": { "favicon": "./assets/favicon.png" },
+          "_internal": {
+            "isDebug": false,
+            "projectRoot": "C:UsersDalciPlaygroundexpo-esbuild-basic",
+            "dynamicConfigPath": null,
+            "staticConfigPath": "C:UsersDalciPlaygroundexpo-esbuild-basicapp.json",
+            "packageJsonPath": "C:UsersDalciPlaygroundexpo-esbuild-basicpackage.json"
+          },
+          "sdkVersion": "41.0.0",
+          "platforms": ["ios", "android", "web"],
+          "developer": {
+            "tool": "expo-cli",
+            "projectRoot": "C:UsersDalciPlaygroundexpo-esbuild-basic"
+          },
+          "packagerOpts": {
+            "scheme": null,
+            "hostType": "lan",
+            "lanType": "ip",
+            "devClient": false,
+            "dev": true,
+            "minify": false,
+            "urlRandomness": "3n-4qg",
+            "https": false
+          },
+          "mainModuleName": "index",
+          "bundleUrl": "http://192.168.29.72:19000/index.bundle?platform=android&dev=true&hot=false&minify=false",
+          "debuggerHost": "192.168.29.72:19000",
+          "logUrl": "http://192.168.29.72:19000/logs",
+          "hostUri": "192.168.29.72:19000",
+          "iconUrl": "http://192.168.29.72:19000/assets/./assets/icon.png",
+          "id": "@dalci/expo-esbuild-basic",
+          "isVerified": true,
+          "primaryColor": "#023C69"
+        }
+      }
+    }
+  }
+]

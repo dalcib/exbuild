@@ -2,6 +2,7 @@ const { getConfig } = require('@expo/config')
 const removeFlowPlugin = require('./plugins/removeFlowPlugin')
 const assetsPlugin = require('./plugins/assetsPlugin')
 const aliasPlugin = require('./plugins/aliasPlugin')
+const hacksPlugin = require('./plugins/hacksPlugin')
 const { getIp, getExtensions, getAssetLoaders, getPolyfills, getPlugins } = require('./utils')
 
 function getConfigs(platform, { port, minify }) {
@@ -41,12 +42,19 @@ function getConfigs(platform, { port, minify }) {
       },
     },
     native: {
-      removeFlowOptions: ['react-native', '@react-native-community/masked-view'],
+      removeFlowOptions: [
+        'react-native',
+        '@react-native-community/masked-view',
+        'expo-asset-utils',
+        '@react-native-picker/picker',
+        '@react-native-segmented-control/segmented-control',
+        '@react-native-community/datetimepicker',
+      ],
       aliasOptions: {
         'react-native-vector-icons/MaterialCommunityIcons':
           'node_modules/@expo/vector-icons/MaterialCommunityIcons.js',
       },
-      plugins: [removeFlowPlugin, assetsPlugin, aliasPlugin],
+      plugins: [removeFlowPlugin, assetsPlugin(platform), aliasPlugin, hacksPlugin],
       polyfills: [
         './node_modules/react-native/Libraries/polyfills/console.js',
         './node_modules/react-native/Libraries/polyfills/error-guard.js',
@@ -58,7 +66,7 @@ function getConfigs(platform, { port, minify }) {
           js: `${`var __BUNDLE_START_TIME__=this.nativePerformanceNow?nativePerformanceNow():Date.now()
    var window = typeof globalThis !== 'undefined' ? globalThis : typeof global !== 'undefined' ? global : typeof window !== 'undefined' ? window : this;`}`,
         },
-        target: 'safari11',
+        target: 'es2015',
         format: 'iife',
       },
     },
@@ -73,7 +81,7 @@ function getConfigs(platform, { port, minify }) {
   const projectRoot = process.cwd().replace(/\\/g, '/')
   const ip = getIp()
   const expoConfig = getConfig(process.cwd())
-  const assetExts = ['bmp', 'gif', 'jpg', 'jpeg', 'png', 'psd', 'svg', 'webp', 'm4v', 'mov', 'mp4', 'mpeg', 'mpg', 'webm', 'aac', 'aiff', 'caf', 'm4a', 'mp3',  'wav', 'html', 'pdf', 'yaml', 'yml', 'otf', 'ttf', 'zip'] //prettier-ignore
+  const assetExts = ['bmp', 'gif', 'jpg', 'jpeg', 'png', 'psd', 'svg', 'webp', 'm4v', 'mov', 'mp4', 'mpeg', 'mpg', 'webm', 'aac', 'aiff', 'caf', 'm4a', 'mp3',  'wav', 'html', 'pdf', 'yaml', 'yml', 'otf', 'ttf', 'zip', 'db'] //prettier-ignore
   const host = `${ip}:${port}`
 
   /** @typedef {import('esbuild').BuildOptions} BuildOptions  */
@@ -107,6 +115,7 @@ function getConfigs(platform, { port, minify }) {
 
   const initialPage = {
     ...expoConfig.exp,
+    appOwnership: 'expo',
     packagerOpts: {
       hostType: 'lan',
       lanType: 'ip',
