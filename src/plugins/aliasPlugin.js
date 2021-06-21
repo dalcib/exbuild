@@ -14,7 +14,9 @@ function aliasPlugin(options) {
       build.onResolve({ filter: regexp }, (args) => {
         let newPath
         try {
-          newPath = require.resolve(options[args.path])
+          newPath = require.resolve(options[args.path], {
+            paths: [process.cwd()],
+          })
         } catch (error) {
           newPath = resolve(projectRoot, options[args.path])
         }

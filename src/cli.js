@@ -20,6 +20,7 @@ program
   .arguments('[platform]')
   .option('-p, --port <number>', 'port number', '19000')
   .option('-m, --minify', 'Minify', false)
+  .option('-c, --clean-cache', 'Clean cache', false)
   .action((platforn, options) => {
     console.log(platform, options)
     const config = getConfigs(platform, options)

@@ -1,7 +1,7 @@
-const fs = require('fs')
 const path = require('path')
-const crypto = require('crypto')
-const sizeOf = require('image-size')
+//const fs = require('fs')
+//onst crypto = require('crypto')
+//const sizeOf = require('image-size')
 const { getAssetData } = require('metro/src/Assets')
 
 function camelize(text) {
@@ -10,6 +10,8 @@ function camelize(text) {
 }
 
 const imageExts = ['bmp', 'gif', 'jpg', 'jpeg', 'png', 'psd', 'svg', 'webp', 'heic']
+
+const filter = new RegExp(imageExts.map((ext) => `\.${ext}$`).join('|'))
 
 function assetsPlugin(platform) {
   return {
@@ -23,14 +25,23 @@ function assetsPlugin(platform) {
         console.log(`build ended with ${result.errors.length} errors`)
         console.timeEnd('Esbuild Time:')
       })
-      build.onResolve({ filter: /\.jpg$|\.png$|\.ttf$/ }, (args) =>
-        path.parse(args.importer).base === path.parse(args.path + '.ast.js').base
-          ? { path: path.resolve(args.resolveDir, args.path), namespace: 'file' }
-          : { path: path.resolve(args.resolveDir, args.path) + '.ast.js', namespace: 'assets' }
-      )
+      build.onResolve({ filter }, (args) => {
+        let assetFile
+        try {
+          assetFile = require.resolve(args.path, {
+            paths: [process.cwd()],
+          })
+        } catch (e) {
+          assetFile = path.resolve(args.resolveDir, args.path)
+        }
+        assetFile = assetFile.replace(/\\/g, '/')
+        if (path.parse(args.importer).base === path.parse(args.path + '.ast.js').base) {
+          return { path: assetFile, namespace: 'file' }
+        }
+        return { path: assetFile + '.ast.js', namespace: 'assets' }
+      })
       build.onLoad({ filter: /.*/, namespace: 'assets' }, async (args) => {
         const assetPath = args.path.slice(0, -7).replace(/\\/g, '/')
-        //const { name, base, ext } = path.parse(assetPath)
 
         const asset = await getAssetData(
           assetPath,
@@ -44,20 +55,12 @@ function assetsPlugin(platform) {
   const { registerAsset } = require('react-native/Libraries/Image/AssetRegistry.js')
   ${asset.files
     .map(
-      (file) =>
-        'const ' +
-        camelize(path.parse(file).name) +
-        " = require('" +
-        file.replace(/\\/g, '/') +
-        "')"
+      (file) => `const ${camelize(path.parse(file).name)} = require('${file.replace(/\\/g, '/')}')`
     )
     .join('\n')}\n
   const asset = registerAsset(${JSON.stringify(asset, null, 6)})
   module.exports = asset
   `
-
-        /*         if (name === 'user' || name === 'exponent-icon' || name === 'chapeau')
-          console.log(assetPath, contents) //, JSON.stringify(asset, null, 2)) */
         return { contents, loader: 'js', resolveDir: path.resolve(path.parse(args.path).dir) }
       })
     },
@@ -66,6 +69,8 @@ function assetsPlugin(platform) {
 
 module.exports = assetsPlugin
 
+/*         if (name === 'user' || name === 'exponent-icon' || name === 'chapeau')
+  console.log(assetPath, contents) //, JSON.stringify(asset, null, 2)) */
 /*       const hasher = crypto.createHash('md5')
           hasher.update(fs.readFileSync(assetPath))
           const hash = hasher.digest('hex')

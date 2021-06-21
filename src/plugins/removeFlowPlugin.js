@@ -12,9 +12,10 @@ mkdir(projectRoot + '/.expo/esbuild')
 mkdir(projectRoot + '/.expo/esbuild/cache')
 const cacheFile = projectRoot + '/.expo/esbuild/cache/removed-flow.json'
 
-if (fs.existsSync(cacheFile)) cache = new Map(JSON.parse(fs.readFileSync(cacheFile).toString()))
+function removeFlowPlugin(modules, cleanCache) {
+  if (fs.existsSync(cacheFile) && !cleanCache)
+    cache = new Map(JSON.parse(fs.readFileSync(cacheFile).toString()))
 
-function removeFlowPlugin(modules) {
   const packagesRemoveFlow = new RegExp(
     modules
       .map((module) => module.replace(/\\/g, '/'))

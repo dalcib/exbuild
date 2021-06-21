@@ -5,12 +5,13 @@ const aliasPlugin = require('./plugins/aliasPlugin')
 const hacksPlugin = require('./plugins/hacksPlugin')
 const { getIp, getExtensions, getAssetLoaders, getPolyfills, getPlugins } = require('./utils')
 
-function getConfigs(platform, { port, minify }) {
+function getConfigs(platform, { port, minify, cleanCache }) {
   const config = {
     web: {
+      cleanCache,
       removeFlowOptions: [],
       aliasOptions: {
-        'react-native': 'node_modules/react-native-web/dist/index.js',
+        'react-native/': 'node_modules/react-native-web/dist/index.js',
         'react-native-vector-icons/MaterialCommunityIcons':
           'node_modules/@expo/vector-icons/MaterialCommunityIcons.js',
         'react-native/Libraries/Components/View/ViewStylePropTypes$':
@@ -42,19 +43,30 @@ function getConfigs(platform, { port, minify }) {
       },
     },
     native: {
+      cleanCache,
       removeFlowOptions: [
-        'react-native',
+        'react-native/',
         '@react-native-community/masked-view',
-        'expo-asset-utils',
+        //'expo-asset-utils',
         '@react-native-picker/picker',
         '@react-native-segmented-control/segmented-control',
         '@react-native-community/datetimepicker',
+        '@react-native-async-storage/async-storage',
+        'react-native-view-shot',
+        'react-native-gesture-handler',
+        '@react-native-community/toolbar-android',
       ],
       aliasOptions: {
+        'react-native-vector-icons': 'node_modules/@expo/vector-icons',
         'react-native-vector-icons/MaterialCommunityIcons':
           'node_modules/@expo/vector-icons/MaterialCommunityIcons.js',
+        'react-native-screens': 'node_modules/react-native-screens/lib/module/index.native.js',
+        'react-native-map-clustering':
+          'node_modules/react-native-map-clustering/lib/ClusteredMapView.js',
+        '@nex/data/hooks': './data/src/index-hooks.ts',
+        '@nex/data': './data/src/index.ts',
       },
-      plugins: [removeFlowPlugin, assetsPlugin(platform), aliasPlugin, hacksPlugin],
+      plugins: [hacksPlugin, removeFlowPlugin, assetsPlugin(platform), aliasPlugin],
       polyfills: [
         './node_modules/react-native/Libraries/polyfills/console.js',
         './node_modules/react-native/Libraries/polyfills/error-guard.js',
@@ -66,7 +78,7 @@ function getConfigs(platform, { port, minify }) {
           js: `${`var __BUNDLE_START_TIME__=this.nativePerformanceNow?nativePerformanceNow():Date.now()
    var window = typeof globalThis !== 'undefined' ? globalThis : typeof global !== 'undefined' ? global : typeof window !== 'undefined' ? window : this;`}`,
         },
-        target: 'es2015',
+        target: 'es2016',
         format: 'iife',
       },
     },
@@ -101,13 +113,15 @@ function getConfigs(platform, { port, minify }) {
     bundle: true,
     sourcemap: true,
     incremental: true,
+    tsconfig: 'tsconfig.json',
+    mainFields: ['react-native', 'browser', 'module', 'main'],
     define: {
       'process.env.JEST_WORKER_ID': 'false',
       'process.env.NODE_DEV': minify ? '"production"' : '"development"',
       __DEV__: minify ? 'false' : 'true',
       global: 'window',
     },
-    loader: { ...getAssetLoaders(assetExts), '.js': 'jsx' },
+    loader: { ...getAssetLoaders(assetExts), '.js': 'jsx', '.lazy': 'json' },
     plugins: getPlugins(config[platform]),
     resolveExtensions: getExtensions(platform),
     ...config[platform].esbuildOptions,

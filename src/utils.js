@@ -23,7 +23,9 @@ function getExtensions(platform) {
 
 function getPlugins(config) {
   return config.plugins.map((plugin) => {
-    if (plugin.name === 'removeFlowPlugin') return plugin(config.removeFlowOptions)
+    if (plugin.name === 'removeFlowPlugin') {
+      return plugin(config.removeFlowOptions, config.cleanCache)
+    }
     if (plugin.name === 'aliasPlugin') return plugin(config.aliasOptions)
     return plugin
   })
