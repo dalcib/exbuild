@@ -3,30 +3,32 @@ const removeFlowPlugin = require('./plugins/removeFlowPlugin')
 const assetsPlugin = require('./plugins/assetsPlugin')
 const aliasPlugin = require('./plugins/aliasPlugin')
 const hacksPlugin = require('./plugins/hacksPlugin')
-const { getIp, getExtensions, getAssetLoaders, getPolyfills, getPlugins } = require('./utils')
+const { getIp, setExtensions, setAssetLoaders, setPolyfills, setPlugins } = require('./utils')
 
-function getConfigs(platform, { port, minify, cleanCache }) {
+function getConfigs(platform, { port, minify, cleanCache, liveReload }) {
   const config = {
     web: {
       cleanCache,
       removeFlowOptions: [],
-      aliasOptions: {
-        'react-native/': 'node_modules/react-native-web/dist/index.js',
+      importMap: {
+        'react-native': './node_modules/react-native-web/dist/index.js',
+        'react-native-vector-icons/': './node_modules/@expo/vector-icons/',
         'react-native-vector-icons/MaterialCommunityIcons':
-          'node_modules/@expo/vector-icons/MaterialCommunityIcons.js',
-        'react-native/Libraries/Components/View/ViewStylePropTypes$':
-          'react-native-web/dist/exports/View/ViewStylePropTypes',
-        'react-native/Libraries/EventEmitter/RCTDeviceEventEmitter$':
-          'react-native-web/dist/vendor/react-native/NativeEventEmitter/RCTDeviceEventEmitter',
-        'react-native/Libraries/vendor/emitter/EventEmitter$':
-          'react-native-web/dist/vendor/react-native/emitter/EventEmitter',
-        'react-native/Libraries/vendor/emitter/EventSubscriptionVendor$':
-          'react-native-web/dist/vendor/react-native/emitter/EventSubscriptionVendor',
-        'react-native/Libraries/EventEmitter/NativeEventEmitter$':
-          'react-native-web/dist/vendor/react-native/NativeEventEmitter',
-        'react-native/Libraries/Image/AssetSourceResolver$': 'expo-asset/build/AssetSourceResolver',
-        'react-native/Libraries/Image/assetPathUtils$': 'expo-asset/build/Image/assetPathUtils',
-        'react-native/Libraries/Image/resolveAssetSource$': 'expo-asset/build/resolveAssetSource',
+          './node_modules/@expo/vector-icons/MaterialCommunityIcons.js',
+        'react-native/Libraries/Components/View/ViewStylePropTypes/':
+          './node_modules/react-native-web/dist/exports/View/ViewStylePropTypes/',
+        'react-native/Libraries/EventEmitter/RCTDeviceEventEmitter/':
+          './node_modules/react-native-web/dist/vendor/react-native/NativeEventEmitter/RCTDeviceEventEmitter/',
+        'react-native/Libraries/vendor/emitter/EventEmitter/':
+          './node_modules/react-native-web/dist/vendor/react-native/emitter/EventEmitter/',
+        'react-native/Libraries/vendor/emitter/EventSubscriptionVendor/':
+          './node_modules/react-native-web/dist/vendor/react-native/emitter/EventSubscriptionVendor/',
+        'react-native/Libraries/EventEmitter/NativeEventEmitter/':
+          './node_modules/react-native-web/dist/vendor/react-native/NativeEventEmitter/',
+        'react-native/Libraries/Image/AssetSourceResolver/':
+          './node_modules/expo-asset/build/AssetSourceResolver/',
+        'react-native/Libraries/Image/assetPathUtils/': 'expo-asset/build/Image/assetPathUtils/',
+        'react-native/Libraries/Image/resolveAssetSource/': 'expo-asset/build/resolveAssetSource/',
       },
       plugins: [aliasPlugin],
       polyfills: ['setimmediate'],
@@ -56,17 +58,15 @@ function getConfigs(platform, { port, minify, cleanCache }) {
         'react-native-gesture-handler',
         '@react-native-community/toolbar-android',
       ],
-      aliasOptions: {
-        'react-native-vector-icons': 'node_modules/@expo/vector-icons',
-        'react-native-vector-icons/MaterialCommunityIcons':
-          'node_modules/@expo/vector-icons/MaterialCommunityIcons.js',
-        'react-native-screens': 'node_modules/react-native-screens/lib/module/index.native.js',
-        'react-native-map-clustering':
-          'node_modules/react-native-map-clustering/lib/ClusteredMapView.js',
+      importMap: {
+        'react-native-vector-icons/': './node_modules/@expo/vector-icons/',
+        'react-native-screens': './node_modules/react-native-screens/lib/module/index.native.js',
+        /*         'react-native-map-clustering':
+          './node_modules/react-native-map-clustering/lib/ClusteredMapView.js',
         '@nex/data/hooks': './data/src/index-hooks.ts',
-        '@nex/data': './data/src/index.ts',
+        '@nex/data': './data/src/index.ts', */
       },
-      plugins: [hacksPlugin, removeFlowPlugin, assetsPlugin(platform), aliasPlugin],
+      plugins: [hacksPlugin, removeFlowPlugin, assetsPlugin, aliasPlugin],
       polyfills: [
         './node_modules/react-native/Libraries/polyfills/console.js',
         './node_modules/react-native/Libraries/polyfills/error-guard.js',
@@ -95,12 +95,13 @@ function getConfigs(platform, { port, minify, cleanCache }) {
   const expoConfig = getConfig(process.cwd())
   const assetExts = ['bmp', 'gif', 'jpg', 'jpeg', 'png', 'psd', 'svg', 'webp', 'm4v', 'mov', 'mp4', 'mpeg', 'mpg', 'webm', 'aac', 'aiff', 'caf', 'm4a', 'mp3',  'wav', 'html', 'pdf', 'yaml', 'yml', 'otf', 'ttf', 'zip', 'db'] //prettier-ignore
   const host = `${ip}:${port}`
+  const platformConfig = config[platform]
 
   /** @typedef {import('esbuild').BuildOptions} BuildOptions  */
   /** @type {BuildOptions} */
-  const buildconfig = {
+  const buildConfig = {
     stdin: {
-      contents: `${getPolyfills(config[platform].polyfills)}\nrequire('./${expoConfig.pkg.main}');`,
+      contents: `${setPolyfills(platformConfig.polyfills)}\nrequire('./${expoConfig.pkg.main}');`,
       resolveDir: '.',
       sourcefile: `index.${platform}.js`,
       loader: 'js',
@@ -121,9 +122,9 @@ function getConfigs(platform, { port, minify, cleanCache }) {
       __DEV__: minify ? 'false' : 'true',
       global: 'window',
     },
-    loader: { ...getAssetLoaders(assetExts), '.js': 'jsx', '.lazy': 'json' },
-    plugins: getPlugins(config[platform]),
-    resolveExtensions: getExtensions(platform),
+    loader: { ...setAssetLoaders(assetExts), '.js': 'jsx', '.lazy': 'json' },
+    plugins: setPlugins(platformConfig, platform, assetExts),
+    resolveExtensions: setExtensions(platform),
     ...config[platform].esbuildOptions,
   }
 
@@ -151,12 +152,14 @@ function getConfigs(platform, { port, minify, cleanCache }) {
   }
 
   return {
-    buildconfig,
-    projectRoot,
-    ip,
-    assetExts,
+    platform,
+    buildConfig,
     initialPage,
+    ip,
     port,
+    liveReload,
+    platformConfig,
+    assetExts,
   }
 }
 

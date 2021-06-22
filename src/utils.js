@@ -11,7 +11,7 @@ function getIp() {
 }
 
 /** @param {'android'|'ios'|'web'} platform */
-function getExtensions(platform) {
+function setExtensions(platform) {
   const platfExts = [`.${platform}.tsx`, `.${platform}.ts`, `.${platform}.jsx`, `.${platform}.js`]
   const baseExts = ['.tsx', '.ts', '.jsx', '.js', '.json', '.wasm']
   if (platform === 'web') {
@@ -21,18 +21,19 @@ function getExtensions(platform) {
   }
 }
 
-function getPlugins(config) {
+function setPlugins(config, platform, assetExts) {
   return config.plugins.map((plugin) => {
     if (plugin.name === 'removeFlowPlugin') {
       return plugin(config.removeFlowOptions, config.cleanCache)
     }
-    if (plugin.name === 'aliasPlugin') return plugin(config.aliasOptions)
+    if (plugin.name === 'aliasPlugin') return plugin(config.importMap)
+    if (plugin.name === 'assetsPlugin') return plugin(platform, assetExts)
     return plugin
   })
 }
 
 /** @param {string[]} assetExts */
-function getAssetLoaders(assetExts) {
+function setAssetLoaders(assetExts) {
   return assetExts.reduce((loaders, ext) => {
     loaders['.' + ext] = 'file'
     return loaders
@@ -40,7 +41,7 @@ function getAssetLoaders(assetExts) {
 }
 
 /** @param {string[]} polyfills */
-function getPolyfills(polyfills) {
+function setPolyfills(polyfills) {
   return polyfills.map((polyfill) => 'require("' + polyfill + '");').join('\n')
 }
 
@@ -55,4 +56,4 @@ function mkdir(dir) {
   }
 }
 
-module.exports = { getIp, getExtensions, getAssetLoaders, getPolyfills, getPlugins, mkdir }
+module.exports = { getIp, setExtensions, setAssetLoaders, setPolyfills, setPlugins, mkdir }

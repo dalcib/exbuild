@@ -2,7 +2,7 @@ const path = require('path')
 const fs = require('fs')
 
 const hacksPlugin = {
-  name: 'alias',
+  name: 'hacks',
   setup(build) {
     build.onLoad({ filter: /views[\\|/]GestureHandlerNative\.js$/ }, (args) => {
       return replace(args, ', PanGestureHandlerGestureEvent', '')

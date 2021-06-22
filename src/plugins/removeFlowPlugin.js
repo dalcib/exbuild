@@ -1,15 +1,11 @@
 const fs = require('fs')
 const path = require('path')
 const flowRemoveTypes = require('flow-remove-types')
-const { mkdir } = require('./../utils')
 
 const projectRoot = process.cwd().replace(/\\/g, '/')
 
 let cache = new Map()
 let updateCache = false
-mkdir(projectRoot + '/.expo')
-mkdir(projectRoot + '/.expo/esbuild')
-mkdir(projectRoot + '/.expo/esbuild/cache')
 const cacheFile = projectRoot + '/.expo/esbuild/cache/removed-flow.json'
 
 function removeFlowPlugin(modules, cleanCache) {
@@ -26,7 +22,7 @@ function removeFlowPlugin(modules, cleanCache) {
   )
 
   return {
-    name: 'createFlowRemoveTypesPlugin',
+    name: 'removeFlow',
     setup(build) {
       build.onLoad({ filter: packagesRemoveFlow, namespace: 'file' }, async (args) => {
         const relpath = path.relative(process.cwd(), args.path)

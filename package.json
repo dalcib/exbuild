@@ -12,10 +12,10 @@
   "license": "MIT",
   "dependencies": {
     "commander": "^7.2.0",
+    "deno-importmap": "^0.1.6",
     "esbuild": "^0.12.5",
     "esbuild-plugin-alias": "^0.1.2",
     "flow-remove-types": "^2.152.0",
-    "image-size": "^1.0.0",
     "qrcode-terminal": "^0.12.0"
   },
   "devDependencies": {
@@ -24,8 +24,7 @@
   "peerDependencies": {
     "@expo/config": "^4.0.2",
     "@react-native-community/cli-server-api": "4.13.1",
-    "metro": "0.59.0",
     "expo-asset": "8.3.2",
-    "expo-config": "1.0.0"
+    "metro": "0.59.0"
   }
 }
