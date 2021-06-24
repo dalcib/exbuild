@@ -39,6 +39,7 @@ program
 
 function init(platform) {
   const projectRoot = process.cwd().replace(/\\/g, '/')
+  mkdir(projectRoot + '/dist')
   if (!existsSync(projectRoot + '/dist/index.html') && platform === 'web') {
     copyFileSync(resolve(__dirname, './../index.html'), projectRoot + '/dist/index.html')
   }
@@ -50,7 +51,7 @@ function init(platform) {
 }
 
 function formatConfig(config) {
-  const { cleanCache, plugins, polyfills, ...conf } = config.platformConfig
+  const { cleanCache, plugins, /* polyfills,  */ ...conf } = config.platformConfig
   return {
     ...conf,
     esbuildOptions: {

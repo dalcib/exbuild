@@ -56,4 +56,11 @@ function mkdir(dir) {
   }
 }
 
-module.exports = { getIp, setExtensions, setAssetLoaders, setPolyfills, setPlugins, mkdir }
+module.exports = {
+  getIp,
+  setExtensions,
+  setAssetLoaders,
+  setPolyfills,
+  setPlugins,
+  mkdir,
+}
