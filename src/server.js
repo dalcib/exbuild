@@ -11,6 +11,7 @@ let reload
 const clients = []
 
 function runServer(platform, { buildConfig, ip, port, initialPage, liveReload }) {
+  console.log(port, 'ppppppppppp')
   esbuild
     .build({
       ...buildConfig,
@@ -61,7 +62,7 @@ function runServer(platform, { buildConfig, ip, port, initialPage, liveReload })
 
         middleware.use(initialPageMiddleware(initialPage))
         middleware.use(nativeMiddleware)
-        const server = http.createServer(middleware).listen(19000)
+        const server = http.createServer(middleware).listen(port)
         const { messageSocket, eventsSocket } = attachToServer(server)
 
         reload = () => messageSocket.broadcast('reload')

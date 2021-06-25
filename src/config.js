@@ -8,7 +8,8 @@ const { getIp, setExtensions, setAssetLoaders, setPolyfills, setPlugins } = requ
 
 /** @typedef {import('esbuild').BuildOptions} BuildOptions  */
 /** @typedef {import('esbuild').Plugin} Plugin  */
-/** @typedef {'web' | 'native' | 'android' | 'ios'} Platform  */
+/** @typedef {'web' | 'android' | 'ios'} Platform  */
+/** @typedef {Platform | 'native'} PlatformPlus  */
 
 /**
  * @typedef ExbuildOptions
@@ -33,7 +34,7 @@ const { getIp, setExtensions, setAssetLoaders, setPolyfills, setPlugins } = requ
  * @param {Config} config
  */
 function getConfigs(platform, { port, minify, cleanCache, liveReload, configFile }) {
-  /** @type {{[key in Platform]?: ExbuildOptions}} */
+  /** @type {{[key in Platform | 'native']?: ExbuildOptions}} */
   const config = {
     web: {
       cleanCache,
@@ -75,7 +76,7 @@ function getConfigs(platform, { port, minify, cleanCache, liveReload, configFile
     native: {
       cleanCache,
       removeFlowOptions: [
-        'react-native/',
+        'react-native',
         '@react-native-community/masked-view',
         //'expo-asset-utils',
         '@react-native-picker/picker',
@@ -153,7 +154,7 @@ function getConfigs(platform, { port, minify, cleanCache, liveReload, configFile
       bundle: true,
       sourcemap: true,
       incremental: true,
-      tsconfig: 'tsconfig.json',
+      //tsconfig: 'tsconfig.json',
       mainFields: ['react-native', 'browser', 'module', 'main'],
       define: {
         'process.env.JEST_WORKER_ID': 'false',
