@@ -6,7 +6,7 @@ const projectRoot = process.cwd().replace(/\\/g, '/')
 
 let cache = new Map()
 let updateCache = false
-const cacheFile = projectRoot + '/.expo/esbuild/cache/removed-flow.json'
+const cacheFile = projectRoot + '/.expo/exbuild/cache/removed-flow.json'
 
 function removeFlowPlugin(modules, cleanCache) {
   if (fs.existsSync(cacheFile) && !cleanCache)

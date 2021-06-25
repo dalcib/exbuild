@@ -45,18 +45,18 @@ function init(platform) {
   }
   if (platform !== 'web') {
     mkdir(projectRoot + '/.expo')
-    mkdir(projectRoot + '/.expo/esbuild')
-    mkdir(projectRoot + '/.expo/esbuild/cache')
+    mkdir(projectRoot + '/.expo/exbuild')
+    mkdir(projectRoot + '/.expo/exbuild/cache')
   }
 }
 
 function formatConfig(config) {
-  const { cleanCache, plugins, /* polyfills,  */ ...conf } = config.platformConfig
+  const { cleanCache, plugins, ...conf } = config.platformConfig
   return {
     ...conf,
     esbuildOptions: {
       ...config.buildConfig,
-      plugins: config.buildConfig.plugins.map(({ name }) => name),
+      plugins: config.buildConfig.plugins.map(({ name }) => name + 'Internal'),
     },
   }
 }

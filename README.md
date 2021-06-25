@@ -8,17 +8,11 @@ Esbuild is a very fast bundler. You can use this tool to prototype react-native 
 
 The react-native-web projects will run in an HTTP development server with livereload. The react-native projects for android will run in the Expo Go app. You can use the barcode to open the project in the expo app, like a normal expo. I am sorry, iOS users, but it doesn`t work whit iOS yet. Help wanted.
 
+For native (android) Exbuild requires Expo 41.0.0
+
 ## Install
 
-```
-$ npm i exbuild
-```
-
-or
-
-```
-$ npm i -g exbuild
-```
+```$ npm i exbuild```  or   ```$ npm i -g exbuild```
 
 ## Usage
 

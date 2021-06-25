@@ -1,13 +1,18 @@
 {
-  "name": "esbuild-expo",
+  "name": "exbuild",
   "version": "0.1.0",
-  "description": "",
+  "description": "Use Esbuild with react-native and Expo Go in development or with react-native-web",
   "main": "src/index.js",
   "bin": "src/cli.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "exbuild",
+    "react-native",
+    "react-native-web",
+    "expo"
+  ],
   "author": "Dalci de Jesus Bagolin <dalci.b+npm@gmail.com> (https://github.org/dalcib)",
   "license": "MIT",
   "dependencies": {

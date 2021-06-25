@@ -3,7 +3,7 @@ const merge = require('deepmerge')
 const removeFlowPlugin = require('./plugins/removeFlowPlugin')
 const assetsPlugin = require('./plugins/assetsPlugin')
 const aliasPlugin = require('./plugins/aliasPlugin')
-const hacksPlugin = require('./plugins/hacksPlugin')
+const hacksPlugin = require('./plugins/patchsPlugin')
 const { getIp, setExtensions, setAssetLoaders, setPolyfills, setPlugins } = require('./utils')
 
 /** @typedef {import('esbuild').BuildOptions} BuildOptions  */
