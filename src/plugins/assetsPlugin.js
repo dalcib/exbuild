@@ -30,8 +30,6 @@ function assetsPlugin(platform, assetExts) {
       build.onLoad({ filter: /.*/, namespace: 'assets' }, async (args) => {
         const assetPath = args.path.slice(0, -7).replace(/\\/g, '/')
 
-        console.log(assetPath, ';;;;;;')
-
         const asset = await getAssetData(
           assetPath,
           path.basename(assetPath),

@@ -11,7 +11,6 @@ let reload
 const clients = []
 
 function runServer(platform, { buildConfig, ip, port, initialPage, liveReload }) {
-  console.log(port, 'ppppppppppp')
   esbuild
     .build({
       ...buildConfig,

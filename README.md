@@ -47,6 +47,8 @@ You can build for production with the option `-m, --minify` (`$ exbuild web -m`)
 `$ exbuild android` will bundle the project and show a barcode in the terminal to open the app in Expo Go. If the debug option is enabled in the developer menu in the app, the debugger will be open in `http://localhost:19000/debugger-ui/`.
 The app will reload every time a file is saved. To disable it use `--live-reload false`
 
+![](console-barcode.png)
+
 ## Config
 
 It is possible to customize the build with a config file (json or js).
