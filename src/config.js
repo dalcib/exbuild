@@ -1,10 +1,20 @@
-const { getConfig } = require('@expo/config')
+const fs = require('fs')
+const path = require('path')
+//const { getConfig } = require('@expo/config')
 const merge = require('deepmerge')
 const removeFlowPlugin = require('./plugins/removeFlowPlugin')
 const assetsPlugin = require('./plugins/assetsPlugin')
 const aliasPlugin = require('./plugins/aliasPlugin')
 const hacksPlugin = require('./plugins/patchsPlugin')
 const { getIp, setExtensions, setAssetLoaders, setPolyfills, setPlugins } = require('./utils')
+
+const projectRoot = process.cwd().replace(/\\/g, '/')
+const ip = getIp()
+//const expoConfig = getConfig(process.cwd())
+const pkg = JSON.parse(
+  fs.readFileSync(path.resolve(projectRoot, 'package.json'), { encoding: 'utf8' })
+)
+const app = JSON.parse(fs.readFileSync(path.resolve(projectRoot, 'app.json'), { encoding: 'utf8' }))
 
 /** @typedef {import('esbuild').BuildOptions} BuildOptions  */
 /** @typedef {import('esbuild').Plugin} Plugin  */
@@ -34,6 +44,9 @@ const { getIp, setExtensions, setAssetLoaders, setPolyfills, setPlugins } = requ
  * @param {Config} config
  */
 function getConfigs(platform, { port, minify, cleanCache, liveReload, configFile }) {
+  const assetExts = ['bmp', 'gif', 'jpg', 'jpeg', 'png', 'psd', 'svg', 'webp', 'm4v', 'mov', 'mp4', 'mpeg', 'mpg', 'webm', 'aac', 'aiff', 'caf', 'm4a', 'mp3',  'wav', 'html', 'pdf', 'yaml', 'yml', 'otf', 'ttf', 'zip', 'db'] //prettier-ignore
+  const host = `${ip}:${port}`
+
   /** @type {{[key in Platform | 'native']?: ExbuildOptions}} */
   const config = {
     web: {
@@ -116,12 +129,6 @@ function getConfigs(platform, { port, minify, cleanCache, liveReload, configFile
   config.android = config.native
   config.ios = config.native
 
-  const projectRoot = process.cwd().replace(/\\/g, '/')
-  const ip = getIp()
-  const expoConfig = getConfig(process.cwd())
-  const assetExts = ['bmp', 'gif', 'jpg', 'jpeg', 'png', 'psd', 'svg', 'webp', 'm4v', 'mov', 'mp4', 'mpeg', 'mpg', 'webm', 'aac', 'aiff', 'caf', 'm4a', 'mp3',  'wav', 'html', 'pdf', 'yaml', 'yml', 'otf', 'ttf', 'zip', 'db'] //prettier-ignore
-  const host = `${ip}:${port}`
-
   /** @type { ExbuildOptions} */
   let platformConfig
   if (configFile) {
@@ -141,7 +148,7 @@ function getConfigs(platform, { port, minify, cleanCache, liveReload, configFile
   const buildConfig = merge(
     {
       stdin: {
-        contents: `${setPolyfills(platformConfig.polyfills)}\nrequire('./${expoConfig.pkg.main}');`,
+        contents: `${setPolyfills(platformConfig.polyfills)}\nrequire('./${pkg.main}');`,
         resolveDir: '.',
         sourcefile: `index.${platform}.js`,
         loader: 'js',
@@ -172,8 +179,53 @@ function getConfigs(platform, { port, minify, cleanCache, liveReload, configFile
 
   buildConfig.banner.js += config[platform].jsBanner.join('\n')
 
+  /* 
+ { _internal: {
+    isDebug: false,
+    projectRoot: 'C:\\Users\\Dalci\\Playground\\expo-esbuild-nav-x',
+    dynamicConfigPath: null,
+    staticConfigPath: 'C:\\Users\\Dalci\\Playground\\expo-esbuild-nav-x\\app.json',
+    packageJsonPath: 'C:\\Users\\Dalci\\Playground\\expo-esbuild-nav-x\\package.json'
+  },
+  description: undefined,
+  sdkVersion: '41.0.0',
+  platforms: [ 'ios', 'android', 'web' ]
+}
+  
+  */
+
+  const exp = {
+    ...{
+      _internal: {
+        isDebug: false,
+        projectRoot,
+        dynamicConfigPath: null,
+        staticConfigPath: projectRoot + '/app.json',
+        packageJsonPath: projectRoot + '/package.json',
+      },
+      description: undefined,
+      sdkVersion: '41.0.0',
+      platforms: ['ios', 'android', 'web'],
+    },
+    ...app.expo,
+  }
+
   const initialPage = {
-    ...expoConfig.exp,
+    ...{
+      ...{
+        _internal: {
+          isDebug: false,
+          projectRoot,
+          dynamicConfigPath: null,
+          staticConfigPath: projectRoot + '/app.json',
+          packageJsonPath: projectRoot + '/package.json',
+        },
+        description: undefined,
+        sdkVersion: '41.0.0',
+        platforms: ['ios', 'android', 'web'],
+      },
+      ...app.expo,
+    },
     appOwnership: 'expo',
     packagerOpts: {
       hostType: 'lan',
@@ -187,7 +239,7 @@ function getConfigs(platform, { port, minify, cleanCache, liveReload, configFile
       tool: 'esbuild-expo',
       projectRoot,
     },
-    mainModuleName: expoConfig.pkg.main,
+    mainModuleName: pkg.main,
     bundleUrl: `http://${host}/index.${platform}.js?platform=${platform}&dev=${!minify}&hot=false&minify=${minify}`,
     debuggerHost: `${host}`,
     hostUri: `${host}`,

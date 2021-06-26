@@ -1,5 +1,5 @@
 const path = require('path')
-const { getAssetData } = require('metro/src/Assets')
+const { getAssetData } = require('./../assets/Assets')
 
 function camelize(text) {
   text = text.replace(/[-_\s.@]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ''))
@@ -33,7 +33,7 @@ function assetsPlugin(platform, assetExts) {
         const asset = await getAssetData(
           assetPath,
           path.basename(assetPath),
-          [require.resolve('expo-asset/tools/hashAssetFiles')],
+          [path.resolve(__dirname, './../assets/hashAssetFiles.js')],
           platform,
           '/assets'
         )

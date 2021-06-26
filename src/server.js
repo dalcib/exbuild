@@ -1,6 +1,4 @@
 const http = require('http')
-//const fs = require('fs')
-//const path = require('path')
 const spawn = require('child_process').spawn
 const esbuild = require('esbuild')
 const { createDevServerMiddleware } = require('@react-native-community/cli-server-api')
@@ -23,12 +21,7 @@ function runServer(platform, { buildConfig, ip, port, initialPage, liveReload })
           console.log(
             `rebuild succeeded. errors: ${result.errors.length}, warnings: ${result.warnings.length}`
           )
-          //if (platform !== 'web') {
           liveReload && reload()
-          /*           } else {
-            clients.forEach((res) => res.write('data: update\n\n'))
-            clients.length = 0
-          } */
         },
       },
     })
@@ -66,14 +59,14 @@ function runServer(platform, { buildConfig, ip, port, initialPage, liveReload })
 
         reload = () => messageSocket.broadcast('reload')
       } else {
-        const server = http.createServer(webMiddleware(clients)).listen(3000)
+        const server = http.createServer(webMiddleware(clients)).listen(port)
 
         setTimeout(() => {
           const op = { darwin: ['open'], linux: ['xdg-open'], win32: ['cmd', '/c', 'start'] }
           const ptf = process.platform
           //open the default browser only if it is not opened yet
           if (clients.length === 0) {
-            spawn(op[ptf][0], [...[op[ptf].slice(1)], `http://localhost:3000`])
+            spawn(op[ptf][0], [...[op[ptf].slice(1)], `http://localhost:19000`])
           }
         }, 1000)
 
