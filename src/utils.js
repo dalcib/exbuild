@@ -56,6 +56,17 @@ function mkdir(dir) {
   }
 }
 
+function formatConfig(config) {
+  const { cleanCache, plugins, ...conf } = config.platformConfig
+  return {
+    ...conf,
+    esbuildOptions: {
+      ...config.buildConfig,
+      plugins: config.buildConfig.plugins.map(({ name }) => name + 'Internal'),
+    },
+  }
+}
+
 module.exports = {
   getIp,
   setExtensions,
@@ -63,4 +74,5 @@ module.exports = {
   setPolyfills,
   setPlugins,
   mkdir,
+  formatConfig,
 }
