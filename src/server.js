@@ -18,6 +18,7 @@ function runServer(platform, { buildConfig, ip, port, initialPage, liveReload })
             console.error('watch build failed:', error)
             throw error
           }
+
           console.log(
             `rebuild succeeded. errors: ${result.errors.length}, warnings: ${result.warnings.length}`
           )

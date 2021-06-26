@@ -1,6 +1,6 @@
 {
   "name": "exbuild",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Use Esbuild with react-native and Expo Go in development or with react-native-web",
   "main": "src/index.js",
   "bin": "src/cli.js",
@@ -24,12 +24,10 @@
     "flow-remove-types": "^2.152.0",
     "image-size": "^1.0.0",
     "md5-file": "^3.2.3",
-    "qrcode-terminal": "^0.12.0"
+    "qrcode-terminal": "^0.12.0",
+    "@react-native-community/cli-server-api": "4.13.1"
   },
   "devDependencies": {
     "@types/node": "^15.12.0"
-  },
-  "peerDependencies": {
-    "@react-native-community/cli-server-api": "4.13.1"
   }
 }

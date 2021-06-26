@@ -12,13 +12,13 @@ For native (android) Exbuild requires Expo 41.0.0
 
 ## Install
 
-```$ npm i exbuild```  or   ```$ npm i -g exbuild```
+`$ npm i exbuild` or `$ npm i -g exbuild`
 
 ## Usage
 
 ```
 $ exbuild --help
-Usage: exbuild <android | ios | web> [options]
+Usage: exbuild <android | ios | web | init> [options]
 
 Options:
   -v                        output the version number
@@ -42,6 +42,10 @@ You can build for production with the option `-m, --minify` (`$ exbuild web -m`)
 The app will reload every time a file is saved. To disable it use `--live-reload false`
 
 ![](console-barcode.png)
+
+### init
+
+It is possible to create a new project easily with Exbuild. You junt need to use `$ exbuild init`, and it will create a new basic projet in the current folder.
 
 ## Config
 
