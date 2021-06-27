@@ -34,10 +34,25 @@ program
       }
       console.log(platform, options)
       initDist(platform)
-      const config = getConfigs(platform, options)
+
+      let platformCustomConfig = {}
+      if (options.configFile) {
+        try {
+          const customConfig = require(require.resolve(
+            process.cwd().replace(/\\/g, '/') + '/' + options.configFile
+          ))
+          platformCustomConfig = customConfig[platform] || {}
+          console.log(customConfig, platformCustomConfig)
+        } catch (e) {
+          console.log(e, 'error: The path for the config file is invalid')
+        }
+      }
+
+      const config = getConfigs(platform, options, platformCustomConfig)
       if (options.printConfig) {
         console.log(formatConfig(config))
       }
+
       runServer(platform, config)
     }
   })

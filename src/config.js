@@ -1,61 +1,28 @@
 const fs = require('fs')
 const path = require('path')
 const merge = require('deepmerge')
-/* const removeFlowPlugin = require('./plugins/removeFlowPlugin')
-const assetsPlugin = require('./plugins/assetsPlugin')
-const aliasPlugin = require('./plugins/aliasPlugin')
-const hacksPlugin = require('./plugins/patchsPlugin') */
-const { getIp, setExtensions, setAssetLoaders, setPolyfills, setPlugins } = require('./utils')
-const { config, assetExts } = require('./defaultConfig')
+const { getIp, setExtensions, setAssetLoaders, setPlugins, readJSON } = require('./utils')
+const { config, assetExts } = require('./defaultConf')
 
 const ip = getIp()
 const projectRoot = process.cwd().replace(/\\/g, '/')
-const pkg = JSON.parse(
-  fs.readFileSync(path.resolve(projectRoot, 'package.json'), { encoding: 'utf8' })
-)
-const app = JSON.parse(fs.readFileSync(path.resolve(projectRoot, 'app.json'), { encoding: 'utf8' }))
+const pkg = readJSON('package.json')
+const app = readJSON('app.json')
 
 /**
- * @typedef {import('esbuild').BuildOptions} BuildOptions
- * @typedef {'web' | 'android' | 'ios'} Platform
- *
- * @typedef Config
- * @property {string} port
- * @property {boolean} minify
- * @property {boolean} cleanCache
- * @property {boolean} liveReload
- * @property {string} configFile
- *
- * @param {Platform} platform
- * @param {Config} config
+ * @param {'web' | 'android' | 'ios'} platform
+ * @param {{ port: string, minify: boolean, cleanCache: boolean, liveReload: boolean}} config
+ * @param {*} platformCustomConfig
  */
-function getConfigs(platform, { port, minify, cleanCache, liveReload, configFile }) {
+function getConfigs(platform, { port, minify, cleanCache, liveReload }, platformCustomConfig) {
   const host = `${ip}:${port}`
+  console.log(platformCustomConfig)
+  const platformConfig = merge(config[platform], platformCustomConfig)
 
-  let platformConfig
-  if (configFile) {
-    try {
-      const customConfig = require(require.resolve(projectRoot + '/' + configFile))
-      platformConfig = customConfig[platform]
-        ? merge(config[platform], customConfig[platform])
-        : config[platform]
-    } catch (e) {
-      console.log(e, 'error: The path for the config file is invalid')
-    }
-  } else {
-    platformConfig = config[platform]
-  }
-  platformConfig.cleanCache = cleanCache
-
-  /** @type {BuildOptions} */
+  /** @type {import('esbuild').BuildOptions} BuildOptions */
   const buildConfig = merge(
     {
-      stdin: {
-        contents: `${setPolyfills(platformConfig.polyfills)}\nrequire('./${pkg.main}');`,
-        resolveDir: '.',
-        sourcefile: `index.${platform}.js`,
-        loader: 'js',
-      },
+      entryPoints: [pkg.main],
       outfile: `dist/index.${platform}.js`,
       assetNames: 'assets/[name]',
       publicPath: '/',
@@ -72,14 +39,20 @@ function getConfigs(platform, { port, minify, cleanCache, liveReload, configFile
         global: 'window',
       },
       loader: { ...setAssetLoaders(assetExts), '.js': 'jsx' },
-      plugins: setPlugins(platformConfig, platform, assetExts),
+      plugins: setPlugins(platformConfig, platform, assetExts, cleanCache),
       resolveExtensions: setExtensions(platform),
       banner: { js: '' },
     },
     platformConfig.esbuildOptions
   )
 
-  if (!(minify && platform === 'web')) buildConfig.banner.js += config[platform].jsBanner.join('\n')
+  if (platform === 'web' && !minify) {
+    buildConfig.banner.js += `\n(() => new EventSource("/esbuild").onmessage = () => location.reload())();`
+  }
+  if (!(platform === 'web')) {
+    buildConfig.banner.js += `\nvar __BUNDLE_START_TIME__=this.nativePerformanceNow?nativePerformanceNow():Date.now();
+var window = typeof globalThis !== 'undefined' ? globalThis : typeof global !== 'undefined' ? global : typeof window !== 'undefined' ? window : this;`
+  }
 
   const initialPage = {
     ...{

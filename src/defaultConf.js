@@ -13,8 +13,6 @@ const hacksPlugin = require('./plugins/patchsPlugin')
  * @property {string[]} [removeFlowOptions]
  * @property {{[alias: string]: string}} [importMap]
  * @property {(Plugin | (()=>Plugin))[]} [plugins]
- * @property {string[]} [polyfills]
- * @property {string[]} [jsBanner]
  * @property {BuildOptions} [esbuildOptions]
  */
 
@@ -47,21 +45,18 @@ const config = {
     },
     removeFlowOptions: [],
     plugins: [aliasPlugin],
-    polyfills: ['setimmediate'],
-    jsBanner: [' (() => new EventSource("/esbuild").onmessage = () => location.reload())();'],
+    //polyfills: [],
+    //jsBanner: [`(() => new EventSource("/esbuild").onmessage = () => location.reload())();`],
     esbuildOptions: {
       target: 'es2020',
       format: 'esm',
+      inject: ['./node_modules/setimmediate/setImmediate.js'],
     },
   },
   native: {
     importMap: {
       'react-native-vector-icons/': './node_modules/@expo/vector-icons/',
       'react-native-screens': './node_modules/react-native-screens/lib/module/index.native.js',
-      /*         'react-native-map-clustering':
-      './node_modules/react-native-map-clustering/lib/ClusteredMapView.js',
-      '@nex/data/hooks': './data/src/index-hooks.ts',
-      '@nex/data': './data/src/index.ts', */
     },
     removeFlowOptions: [
       'react-native',
@@ -76,17 +71,18 @@ const config = {
       '@react-native-community/toolbar-android',
     ],
     plugins: [hacksPlugin, removeFlowPlugin, assetsPlugin, aliasPlugin],
-    polyfills: [
-      './node_modules/react-native/Libraries/polyfills/console.js',
-      './node_modules/react-native/Libraries/polyfills/error-guard.js',
-      './node_modules/react-native/Libraries/polyfills/Object.es7.js',
-      './node_modules/react-native/Libraries/Core/InitializeCore',
-    ],
-    jsBanner: [
+    //polyfills: [],
+    /* jsBanner: [
       `var __BUNDLE_START_TIME__=this.nativePerformanceNow?nativePerformanceNow():Date.now()`,
       `var window = typeof globalThis !== 'undefined' ? globalThis : typeof global !== 'undefined' ? global : typeof window !== 'undefined' ? window : this;`,
-    ],
+    ], */
     esbuildOptions: {
+      inject: [
+        './node_modules/react-native/Libraries/polyfills/console.js',
+        './node_modules/react-native/Libraries/polyfills/error-guard.js',
+        './node_modules/react-native/Libraries/polyfills/Object.es7.js',
+        './node_modules/react-native/Libraries/Core/InitializeCore.js',
+      ],
       target: 'es2016',
       format: 'iife',
     },

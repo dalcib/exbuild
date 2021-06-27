@@ -1,5 +1,6 @@
 const { networkInterfaces } = require('os')
 const fs = require('fs')
+const path = require('path')
 
 /** @return {string} ip */
 function getIp() {
@@ -21,10 +22,10 @@ function setExtensions(platform) {
   }
 }
 
-function setPlugins(config, platform, assetExts) {
+function setPlugins(config, platform, assetExts, cleanCache) {
   return config.plugins.map((plugin) => {
     if (plugin.name === 'removeFlowPlugin') {
-      return plugin(config.removeFlowOptions, config.cleanCache)
+      return plugin(config.removeFlowOptions, cleanCache)
     }
     if (plugin.name === 'aliasPlugin') return plugin(config.importMap)
     if (plugin.name === 'assetsPlugin') return plugin(platform, assetExts)
@@ -67,6 +68,12 @@ function formatConfig(config) {
   }
 }
 
+function readJSON(file) {
+  return JSON.parse(
+    fs.readFileSync(path.resolve(process.cwd().replace(/\\/g, '/'), file), { encoding: 'utf8' })
+  )
+}
+
 module.exports = {
   getIp,
   setExtensions,
@@ -75,4 +82,5 @@ module.exports = {
   setPlugins,
   mkdir,
   formatConfig,
+  readJSON,
 }
