@@ -1,6 +1,10 @@
 const { networkInterfaces } = require('os')
 const fs = require('fs')
 const path = require('path')
+const removeFlowPlugin = require('./plugins/removeFlowPlugin')
+const assetsPlugin = require('./plugins/assetsPlugin')
+const aliasPlugin = require('./plugins/aliasPlugin')
+const patchsPlugin = require('./plugins/patchsPlugin')
 
 /** @return {string} ip */
 function getIp() {
@@ -29,6 +33,16 @@ function setPlugins(config, platform, assetExts, cleanCache) {
     }
     if (plugin.name === 'aliasPlugin') return plugin(config.importMap)
     if (plugin.name === 'assetsPlugin') return plugin(platform, assetExts)
+    return plugin
+  })
+}
+
+function parsePlugins(plugins, platform, assetExts, cleanCache) {
+  return plugins.map((plugin) => {
+    if (plugin.name === 'exbuildRemoveFlow') return removeFlowPlugin(plugin.params, cleanCache)
+    if (plugin.name === 'exbuildAlias') return aliasPlugin(plugin.params)
+    if (plugin.name === 'exbuildAssets') return assetsPlugin(platform, assetExts)
+    if (plugin.name === 'exbuildPatchs') return patchsPlugin
     return plugin
   })
 }
@@ -80,6 +94,7 @@ module.exports = {
   setAssetLoaders,
   setPolyfills,
   setPlugins,
+  parsePlugins,
   mkdir,
   formatConfig,
   readJSON,

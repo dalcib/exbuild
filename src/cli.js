@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { existsSync, readFileSync, copyFileSync, writeFileSync } = require('fs')
+const { readFileSync } = require('fs')
 const { resolve } = require('path')
 const { Command } = require('commander')
 const getConfigs = require('./config')
@@ -10,6 +10,7 @@ const { formatConfig } = require('./utils')
 
 const program = new Command()
 const pkg = readFileSync(resolve(__dirname, '../package.json'), { encoding: 'utf8' })
+const processRoot = process.cwd().replace(/\\/g, '/')
 
 program
   .name('exbuild')
@@ -38,16 +39,13 @@ program
       let platformCustomConfig = {}
       if (options.configFile) {
         try {
-          const customConfig = require(require.resolve(
-            process.cwd().replace(/\\/g, '/') + '/' + options.configFile
-          ))
+          const customConfig = require(require.resolve(processRoot + '/' + options.configFile))
           platformCustomConfig = customConfig[platform] || {}
-          console.log(customConfig, platformCustomConfig)
         } catch (e) {
           console.log(e, 'error: The path for the config file is invalid')
         }
       }
-
+      //@ts-ignore
       const config = getConfigs(platform, options, platformCustomConfig)
       if (options.printConfig) {
         console.log(formatConfig(config))

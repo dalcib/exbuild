@@ -8,10 +8,10 @@ const { initialPageMiddleware, nativeMiddleware, webMiddleware } = require('./mi
 let reload
 const clients = []
 
-function runServer(platform, { buildConfig, ip, port, initialPage, liveReload }) {
+function runServer(platform, { buildOptions, ip, port, initialPage, liveReload }) {
   esbuild
     .build({
-      ...buildConfig,
+      ...buildOptions,
       watch: {
         onRebuild(error, result) {
           if (error) {
