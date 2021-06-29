@@ -1,7 +1,7 @@
 const child_process = require('child_process')
 const fs = require('fs')
 const path = require('path')
-const { mkdir } = require('./utils')
+const { getIp, readJSON, mkdir } = require('./utils')
 
 const projectRoot = process.cwd().replace(/\\/g, '/')
 const projectName = projectRoot.split('/').pop()
@@ -87,7 +87,7 @@ if (Platform.OS === 'web') {
 }
 `
 
-function initProject() {
+function create() {
   if (!fs.existsSync(resolve('package.json'))) {
     spawn(['init -y'])
     spawn([
@@ -105,18 +105,22 @@ function initProject() {
   }
 }
 
-function initDist(platform) {
+function init(platform) {
   const projectRoot = process.cwd().replace(/\\/g, '/')
   mkdir(projectRoot + '/dist')
   if (!fs.existsSync(projectRoot + '/dist/index.html') && platform === 'web') {
     fs.writeFileSync(projectRoot + '/dist/index.html', index_html)
-    //copyFileSync(resolve(__dirname, './../index.html'), projectRoot + '/dist/index.html')
   }
   if (platform !== 'web') {
     mkdir(projectRoot + '/.expo')
     mkdir(projectRoot + '/.expo/exbuild')
     mkdir(projectRoot + '/.expo/exbuild/cache')
   }
+
+  const ip = getIp()
+  const pkg = readJSON('package.json')
+  const app = readJSON('app.json')
+  return { ip, projectRoot, pkg, app }
 }
 
-module.exports = { initProject, initDist }
+module.exports = { create, init }

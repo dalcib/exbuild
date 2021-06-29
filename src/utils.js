@@ -1,6 +1,7 @@
 const { networkInterfaces } = require('os')
 const fs = require('fs')
 const path = require('path')
+const merge = require('deepmerge')
 const removeFlowPlugin = require('./plugins/removeFlowPlugin')
 const assetsPlugin = require('./plugins/assetsPlugin')
 const aliasPlugin = require('./plugins/aliasPlugin')
@@ -26,22 +27,38 @@ function setExtensions(platform) {
   }
 }
 
-function setPlugins(config, platform, assetExts, cleanCache) {
-  return config.plugins.map((plugin) => {
-    if (plugin.name === 'removeFlowPlugin') {
-      return plugin(config.removeFlowOptions, cleanCache)
-    }
-    if (plugin.name === 'aliasPlugin') return plugin(config.importMap)
-    if (plugin.name === 'assetsPlugin') return plugin(platform, assetExts)
-    return plugin
-  })
+/**
+ * @typedef {{name: string, params?: object | string[], setup?: any}[]} Plugins
+ * @param {Plugins} configPlatformPlugins
+ * @param {Plugins} customConfigPlugins
+ * @return {Plugins}  */
+function mergePlugins(configPlatformPlugins, customConfigPlugins = []) {
+  const mergedInternalPlugins = [
+    'exbuildAlias',
+    'exbuildRemoveFlow',
+    'exbuildAssets',
+    'exbuildPatchs',
+  ]
+    .map((name) => {
+      const platformConfigPlugin = configPlatformPlugins.find((plugin) => plugin.name === name)
+      const customConfigPlugin = customConfigPlugins.find((plugin) => plugin.name === name)
+      return merge(platformConfigPlugin || {}, customConfigPlugin || {})
+    })
+    .filter((plugin) => plugin.name)
+  const externalPlugins = customConfigPlugins.filter((plugin) => !plugin.name.startsWith('exbuild'))
+  //console.log(mergedInternalPlugins, externalPlugins)
+  return [...mergedInternalPlugins, ...externalPlugins]
 }
-
-function parsePlugins(plugins, platform, assetExts, cleanCache) {
+/**
+ * @param {Plugins} plugins
+ * @param {'web' | 'android' | 'ios'} platform
+ * @param {boolean} cleanCache
+ */
+function setPlugins(plugins, platform, cleanCache) {
   return plugins.map((plugin) => {
     if (plugin.name === 'exbuildRemoveFlow') return removeFlowPlugin(plugin.params, cleanCache)
     if (plugin.name === 'exbuildAlias') return aliasPlugin(plugin.params)
-    if (plugin.name === 'exbuildAssets') return assetsPlugin(platform, assetExts)
+    if (plugin.name === 'exbuildAssets') return assetsPlugin(platform, plugin.params)
     if (plugin.name === 'exbuildPatchs') return patchsPlugin
     return plugin
   })
@@ -55,11 +72,6 @@ function setAssetLoaders(assetExts) {
   }, {})
 }
 
-/** @param {string[]} polyfills */
-function setPolyfills(polyfills) {
-  return polyfills.map((polyfill) => 'require("' + polyfill + '");').join('\n')
-}
-
 /** @param {string} dir */
 function mkdir(dir) {
   try {
@@ -71,17 +83,7 @@ function mkdir(dir) {
   }
 }
 
-function formatConfig(config) {
-  const { cleanCache, plugins, ...conf } = config.platformConfig
-  return {
-    ...conf,
-    esbuildOptions: {
-      ...config.buildConfig,
-      plugins: config.buildConfig.plugins.map(({ name }) => name + 'Internal'),
-    },
-  }
-}
-
+/** @param {string} file */
 function readJSON(file) {
   return JSON.parse(
     fs.readFileSync(path.resolve(process.cwd().replace(/\\/g, '/'), file), { encoding: 'utf8' })
@@ -92,10 +94,8 @@ module.exports = {
   getIp,
   setExtensions,
   setAssetLoaders,
-  setPolyfills,
   setPlugins,
-  parsePlugins,
+  mergePlugins,
   mkdir,
-  formatConfig,
   readJSON,
 }

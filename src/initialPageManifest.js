@@ -1,18 +1,18 @@
-const { getIp, readJSON } = require('./utils')
-const { getBuildOptions } = require('./buildOptions')
+//const { getIp, readJSON } = require('./utils')
+//const { getBuildOptions } = require('./buildOptions')
 
-const ip = getIp()
+/* const ip = getIp()
 const projectRoot = process.cwd().replace(/\\/g, '/')
 const pkg = readJSON('package.json')
-const app = readJSON('app.json')
+const app = readJSON('app.json') */
 
-function getConfigs(platform, { port, minify, cleanCache, liveReload }, platformCustomConfig) {
+function getInitialPageManifest(platform, { port, minify }, ip, app, pkg, projectRoot) {
+  //platformCustomConfig /* , app, pkg, ip, projectRoot */
   const host = `${ip}:${port}`
-  console.log(platformCustomConfig)
 
-  const buildOptions = getBuildOptions(platform, minify, pkg.main, platformCustomConfig, cleanCache)
+  //const {buildOptions} = getBuildOptions(platform, minify, pkg.main, platformCustomConfig, cleanCache)
 
-  const initialPage = {
+  const initialPageManifest = {
     ...{
       ...{
         _internal: {
@@ -49,14 +49,7 @@ function getConfigs(platform, { port, minify, cleanCache, liveReload }, platform
     isVerified: true,
   }
 
-  return {
-    platform,
-    buildOptions,
-    initialPage,
-    ip,
-    port,
-    liveReload,
-  }
+  return initialPageManifest
 }
 
-module.exports = getConfigs
+module.exports = getInitialPageManifest

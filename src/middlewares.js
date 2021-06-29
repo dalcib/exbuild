@@ -1,10 +1,10 @@
 const http = require('http')
 
-function initialPageMiddleware(initialPage) {
+function initialPageMiddleware(initialPageManifest) {
   return (req, res, next) => {
     if (req.url === '/') {
       res.writeHead(200, { 'Content-Type': 'application/json' })
-      res.write(JSON.stringify(initialPage))
+      res.write(JSON.stringify(initialPageManifest))
       res.end(null)
     } else {
       next()

@@ -8,7 +8,7 @@ const { initialPageMiddleware, nativeMiddleware, webMiddleware } = require('./mi
 let reload
 const clients = []
 
-function runServer(platform, { buildOptions, ip, port, initialPage, liveReload }) {
+function runServer({ platform, buildOptions, ip, initialPageManifest }, { port, liveReload }) {
   esbuild
     .build({
       ...buildOptions,
@@ -53,7 +53,7 @@ function runServer(platform, { buildOptions, ip, port, initialPage, liveReload }
           watchFolders: [],
         })
 
-        middleware.use(initialPageMiddleware(initialPage))
+        middleware.use(initialPageMiddleware(initialPageManifest))
         middleware.use(nativeMiddleware)
         const server = http.createServer(middleware).listen(port)
         const { messageSocket, eventsSocket } = attachToServer(server)

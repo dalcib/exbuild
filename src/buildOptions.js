@@ -1,5 +1,5 @@
 const merge = require('deepmerge')
-const { setExtensions, setAssetLoaders, parsePlugins } = require('./utils')
+const { setExtensions, setAssetLoaders, mergePlugins, setPlugins } = require('./utils')
 
 const assetExts = ['bmp', 'gif', 'jpg', 'jpeg', 'png', 'psd', 'svg', 'webp', 'm4v', 'mov', 'mp4', 'mpeg', 'mpg', 'webm', 'aac', 'aiff', 'caf', 'm4a', 'mp3',  'wav', 'html', 'pdf', 'yaml', 'yml', 'otf', 'ttf', 'zip', 'db'] //prettier-ignore
 
@@ -88,14 +88,14 @@ config.ios = config.native
 
 /**
  * @param {Platform} platform
- * @param {boolean} minify
- * @param {string} pkgMain
+ * @param {{minify: boolean, cleanCache: boolean}} Options
+ * @param {*} pkg
  * @param {ExbBuildOptions} customConfig
  */
-function getBuildOptions(platform, minify, pkgMain, customConfig, cleanCache) {
+function getBuildOptions(platform, { minify, cleanCache }, pkg, customConfig) {
   /** @type {ExbBuildOptions} */
   const base = {
-    entryPoints: [pkgMain],
+    entryPoints: [pkg.main],
     outfile: `dist/index.${platform}.js`,
     assetNames: 'assets/[name]',
     publicPath: '/',
@@ -116,10 +116,12 @@ function getBuildOptions(platform, minify, pkgMain, customConfig, cleanCache) {
     banner: { js: '' },
   }
 
-  /** @type {ExbBuildOptions} */
+  /** @type {BuildOptions} */
   const buildOptions = merge.all([base, config[platform], customConfig])
 
-  buildOptions.plugins = parsePlugins(buildOptions.plugins, platform, assetExts, cleanCache)
+  const mergedPlugins = mergePlugins(config[platform].plugins, customConfig.plugins)
+  //@ts-ignore
+  buildOptions.plugins = setPlugins(mergedPlugins, platform, cleanCache)
 
   if (platform === 'web' && !minify) {
     buildOptions.banner.js =
@@ -130,7 +132,7 @@ function getBuildOptions(platform, minify, pkgMain, customConfig, cleanCache) {
     buildOptions.banner.js += `\nvar __BUNDLE_START_TIME__=this.nativePerformanceNow?nativePerformanceNow():Date.now();
 var window = typeof globalThis !== 'undefined' ? globalThis : typeof global !== 'undefined' ? global : typeof window !== 'undefined' ? window : this;`
   }
-  return buildOptions
+  return { buildOptions, mergedPlugins }
 }
 
-module.exports = { config, assetExts, getBuildOptions }
+module.exports = getBuildOptions
