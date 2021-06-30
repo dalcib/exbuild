@@ -7,6 +7,9 @@ const assetsPlugin = require('./plugins/assetsPlugin')
 const aliasPlugin = require('./plugins/aliasPlugin')
 const patchsPlugin = require('./plugins/patchsPlugin')
 
+/** @typedef {{name: string, params?: object | string[], setup?: any}[]} Plugins */
+/** @typedef {import('esbuild').Plugin} EsbuildPlugin  */
+
 /** @return {string} ip */
 function getIp() {
   const net = networkInterfaces()
@@ -28,7 +31,6 @@ function setExtensions(platform) {
 }
 
 /**
- * @typedef {{name: string, params?: object | string[], setup?: any}[]} Plugins
  * @param {Plugins} configPlatformPlugins
  * @param {Plugins} customConfigPlugins
  * @return {Plugins}  */
@@ -53,6 +55,7 @@ function mergePlugins(configPlatformPlugins, customConfigPlugins = []) {
  * @param {Plugins} plugins
  * @param {'web' | 'android' | 'ios'} platform
  * @param {boolean} cleanCache
+ * @returns {EsbuildPlugin[]}
  */
 function setPlugins(plugins, platform, cleanCache) {
   return plugins.map((plugin) => {
@@ -60,12 +63,16 @@ function setPlugins(plugins, platform, cleanCache) {
     if (plugin.name === 'exbuildAlias') return aliasPlugin(plugin.params)
     if (plugin.name === 'exbuildAssets') return assetsPlugin(platform, plugin.params)
     if (plugin.name === 'exbuildPatchs') return patchsPlugin
-    return plugin
+    /** @type {EsbuildPlugin} */ // @ts-ignore
+    const esbuildPlugin = plugin
+    return esbuildPlugin
   })
 }
 
 /** @param {string[]} assetExts */
 function setAssetLoaders(assetExts) {
+  /** @type {string[]} */
+  //const assetExts = mergedPlugins.find((plugin) => plugin.name === 'exbuildAssets').params
   return assetExts.reduce((loaders, ext) => {
     loaders['.' + ext] = 'file'
     return loaders

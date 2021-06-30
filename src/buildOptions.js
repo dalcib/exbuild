@@ -1,13 +1,13 @@
 const merge = require('deepmerge')
 const { setExtensions, setAssetLoaders, mergePlugins, setPlugins } = require('./utils')
 
-const assetExts = ['bmp', 'gif', 'jpg', 'jpeg', 'png', 'psd', 'svg', 'webp', 'm4v', 'mov', 'mp4', 'mpeg', 'mpg', 'webm', 'aac', 'aiff', 'caf', 'm4a', 'mp3',  'wav', 'html', 'pdf', 'yaml', 'yml', 'otf', 'ttf', 'zip', 'db'] //prettier-ignore
-
 /** @typedef {import('esbuild').BuildOptions} BuildOptions  */
 /** @typedef {import('esbuild').Plugin} Plugin  */
 /** @typedef {{name: string, params?: object | string[]}} ExbPlugin*/
 /** @typedef {'web' | 'android' | 'ios'} Platform  */
 /** @typedef {BuildOptions | {plugins: ExbPlugin[]}} ExbBuildOptions */
+
+const assetExts =  ['bmp', 'gif', 'jpg', 'jpeg', 'png', 'psd', 'svg', 'webp', 'm4v', 'mov', 'mp4', 'mpeg', 'mpg', 'webm', 'aac', 'aiff', 'caf', 'm4a', 'mp3',  'wav', 'html', 'pdf', 'yaml', 'yml', 'otf', 'ttf', 'zip', 'db'] //prettier-ignore
 
 /** @type {{[key in Platform | 'native']?: ExbBuildOptions}} */
 const config = {
@@ -41,6 +41,9 @@ const config = {
             './node_modules/expo-asset/build/resolveAssetSource',
           '@react-native-async-storage/async-storage':
             './node_modules/@react-native-async-storage/async-storage/lib/module/index.js',
+          'react-native-web/src/modules/normalizeColor':
+            './node_modules/react-native-web/dist/modules/normalizeColor/index.js',
+          'react-native-svg': './node_modules/react-native-svg/lib/module/index.js',
         },
       },
     ],
@@ -77,7 +80,10 @@ const config = {
           '@react-native-community/toolbar-android',
         ],
       },
-      { name: 'exbuildAssets', params: assetExts },
+      {
+        name: 'exbuildAssets',
+        params: assetExts,
+      },
       { name: 'exbuildPatchs' },
     ],
   },
@@ -107,22 +113,20 @@ function getBuildOptions(platform, { minify, cleanCache }, pkg, customConfig) {
     mainFields: ['react-native', 'browser', 'module', 'main'],
     define: {
       'process.env.JEST_WORKER_ID': 'false',
+      'process.env.APP_MANIFEST': '{}',
       'process.env.NODE_DEV': minify ? '"production"' : '"development"',
       __DEV__: minify ? 'false' : 'true',
       global: 'window',
     },
-    loader: { ...setAssetLoaders(assetExts), '.js': 'jsx' },
+    loader: { '.js': 'jsx', ...setAssetLoaders(assetExts) },
     resolveExtensions: setExtensions(platform),
     banner: { js: '' },
   }
 
   /** @type {BuildOptions} */
   const buildOptions = merge.all([base, config[platform], customConfig])
-
   const mergedPlugins = mergePlugins(config[platform].plugins, customConfig.plugins)
-  //@ts-ignore
   buildOptions.plugins = setPlugins(mergedPlugins, platform, cleanCache)
-
   if (platform === 'web' && !minify) {
     buildOptions.banner.js =
       `(() => new EventSource("/esbuild").onmessage = () => location.reload())();\n` +
