@@ -53,6 +53,9 @@ const config = {
       './node_modules/react-native/Libraries/polyfills/console.js',
       './node_modules/react-native/Libraries/polyfills/error-guard.js',
       './node_modules/react-native/Libraries/polyfills/Object.es7.js',
+      //'./node_modules/@react-native//polyfills/console.js',
+      //'./node_modules/@react-native//polyfills/error-guard.js',
+      //'./node_modules/@react-native//polyfills/Object.es7.js',
       './node_modules/react-native/Libraries/Core/InitializeCore.js',
     ],
     target: 'es2016',
@@ -78,6 +81,10 @@ const config = {
           'react-native-view-shot',
           'react-native-gesture-handler',
           '@react-native-community/toolbar-android',
+          '@react-native/normalize-color',
+          '@react-native/assets',
+          '@react-native/polyfills'
+          
         ],
       },
       {
@@ -101,7 +108,7 @@ config.ios = config.native
 function getBuildOptions(platform, { minify, cleanCache }, pkg, customConfig) {
   /** @type {ExbBuildOptions} */
   const base = {
-    entryPoints: [pkg.main],
+    entryPoints: [pkg.main || 'App.js'],
     outfile: `dist/index.${platform}.js`,
     assetNames: 'assets/[name]',
     publicPath: '/',
@@ -110,6 +117,7 @@ function getBuildOptions(platform, { minify, cleanCache }, pkg, customConfig) {
     bundle: true,
     sourcemap: true,
     incremental: true,
+    logLevel: 'debug',
     mainFields: ['react-native', 'browser', 'module', 'main'],
     define: {
       'process.env.JEST_WORKER_ID': 'false',

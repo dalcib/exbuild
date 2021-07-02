@@ -1,11 +1,13 @@
 {
   "name": "exbuild",
-  "version": "0.1.1",
+  "version": "0.2.1",
   "description": "Use Esbuild with react-native and Expo Go in development or with react-native-web",
   "main": "src/index.js",
-  "bin": "src/cli.js",
+  "bin": {
+    "exbuild": "src/cli.js"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "types": "tsc ./src/cli.js --declaration --emitDeclarationOnly --out index.js --module amd --target es2015 --allowJs"
   },
   "keywords": [
     "exbuild",
@@ -17,7 +19,7 @@
   "license": "MIT",
   "dependencies": {
     "@react-native-community/cli-server-api": "4.13.1",
-    "commander": "^7.2.0",
+    "commander": "^8.0.0",
     "deepmerge": "^4.2.2",
     "deno-importmap": "^0.1.6",
     "esbuild": "^0.12.12",
@@ -29,5 +31,13 @@
   },
   "devDependencies": {
     "@types/node": "^15.12.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dalcib/exbuild.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dalcib/exbuild/issues"
+  },
+  "homepage": "https://github.com/dalcib/exbuild#readme"
 }

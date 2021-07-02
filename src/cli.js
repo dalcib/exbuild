@@ -2,7 +2,7 @@
 
 const { readFileSync } = require('fs')
 const { resolve } = require('path')
-const { Command } = require('commander')
+const { Command, Argument } = require('commander')
 const getInitialPageManifest = require('./initialPageManifest')
 const getBuildOptions = require('./buildOptions')
 const runServer = require('./server')
@@ -13,28 +13,33 @@ const pkg = readFileSync(resolve(__dirname, '../package.json'), { encoding: 'utf
 const processRoot = process.cwd().replace(/\\/g, '/')
 
 program
-  .name('exbuild')
+  .name('exbuild') //@ts-ignore
   .version(JSON.parse(pkg).version, '-v')
   .usage('<android | ios | web | init> [options]')
-  .arguments('<platform>')
+  .addArgument(
+    new Argument(
+      '<platform>',
+      'use < android | ios | web > to start the application in dev mode, or < init > to create a new project'
+    ).choices(['android', 'ios', 'web', 'init'])
+  )
+  //.arguments('<platform>')
   .option('-p, --port <number>', 'port number', '19000')
   .option('-m, --minify', 'Minify', false)
   .option('-c, --clean-cache', 'Clean cache', false)
   .option('-r, --live-reload', 'Live reload', true)
   .option('-n, --print-config', 'Print internal config', false)
   .option('-f, --config-file <path>', 'Path to a config file')
-  .option('-i, --init', 'Create a basic projet')
   .action((platform, options) => {
     if (platform === 'init') {
       create()
       return
     }
 
-    if (!['android', 'ios', 'web'].includes(platform)) {
+    /*    if (!['android', 'ios', 'web'].includes(platform)) {
       console.log('Usage: exbuild <platform> [options]')
       console.log("error: <platform> must be 'android', 'ios' or 'web'")
       process.exit()
-    }
+    } */
 
     let platformCustomConfig = {}
     if (options.configFile) {

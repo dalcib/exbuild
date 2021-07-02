@@ -107,6 +107,14 @@ function create() {
 
 function init(platform) {
   const projectRoot = process.cwd().replace(/\\/g, '/')
+  const ip = getIp()
+  const pkg = readJSON('package.json')
+  try {
+    const app = readJSON('app.json')
+  } catch (e) {
+    console.log('error: app.json file not found.')
+    process.exit(1)
+  }
   mkdir(projectRoot + '/dist')
   if (!fs.existsSync(projectRoot + '/dist/index.html') && platform === 'web') {
     fs.writeFileSync(projectRoot + '/dist/index.html', index_html)
@@ -116,10 +124,6 @@ function init(platform) {
     mkdir(projectRoot + '/.expo/exbuild')
     mkdir(projectRoot + '/.expo/exbuild/cache')
   }
-
-  const ip = getIp()
-  const pkg = readJSON('package.json')
-  const app = readJSON('app.json')
   return { ip, projectRoot, pkg, app }
 }
 

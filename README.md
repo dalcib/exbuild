@@ -33,7 +33,6 @@ Options:
   -r, --live-reload         Live reload (default: true)
   -n, --print-config        Print internal config (default: false)
   -f, --config-file <path>  Path to a config file
-  -i, --init                Create a basic projet
   -h, --help                display help for command
 ```
 
@@ -72,6 +71,7 @@ It is possible to customize the [**esbuild**](https://esbuild.github.io/api/#bui
 `exbuild android --config-file path_to_file` or `exbuild web -f path_to_file`
 To see all defaults use the option `-n` or `--print-config`.
 The custom Esbuild options need to be defined by platform.
+The custum config will be merged with the internal default config.
 
 ```javascript
 
