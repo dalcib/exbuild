@@ -109,8 +109,9 @@ function init(platform) {
   const projectRoot = process.cwd().replace(/\\/g, '/')
   const ip = getIp()
   const pkg = readJSON('package.json')
+  let app
   try {
-    const app = readJSON('app.json')
+    app = readJSON('app.json')
   } catch (e) {
     console.log('error: app.json file not found.')
     process.exit(1)

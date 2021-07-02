@@ -1,6 +1,6 @@
 {
   "name": "exbuild",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Use Esbuild with react-native and Expo Go in development or with react-native-web",
   "main": "src/index.js",
   "bin": {
